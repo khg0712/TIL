@@ -24,19 +24,20 @@
 
 위의 예시를 보면 outer 함수 외부에서는 접근할 수 없는 지역변수 k의 값을 얻을 수 있다. 이처럼 클로저는 변수의 유효범위를 이용해서 다양한 기능을 만들어낼 수 있다.
 
-예시2
-
-    var inner;
-    function a () {
-        var inVal = 'a';
-        function b () {
-            return inVal;
-        }
-        inner = b();
+**예시**
+```javascript
+var inner;
+function a () {
+    var inVal = 'a';
+    function b () {
+        return inVal;
     }
+    inner = b();
+}
 
-    a(); // inner에 함수 b할당
-    inner(); // 'a' 반환
+a(); // inner에 함수 b할당
+inner(); // 'a' 반환
+```
 
 위의 예시에서는 함수 a가 반환되었지만 inner가 함수 a에 대한 접근이 계속 유지된다는 것을 알 수 있다. 따라서 함수가 반환되어도 해당 함수의 지역 변수, 함수에 대한 접근이 가능하다는 모순(?)을 보여준다.
 

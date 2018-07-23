@@ -1,0 +1,69 @@
+# 엘리먼트 렌더링
+
+> 엘리먼트는 리액트 앱에서 가장 작은 구성 단위다.
+
+엘리먼트는 네가 화면에 보여주고 싶은 것을 설명한다.
+
+```
+const element = <h1>Hello, World!</h1>;
+```
+
+브라우저 DOM 엘리먼트와 다르게, 리액트 엘리먼트는 순수 JS 객체다. 그리고 리액트 엘리먼트는 생성 비용이 싸다. 리액트 DOM은 리액트 DOM과 브라우저 DOM이 일치하도록 브라우저 DOM을 업데이트한다.
+
+## DOM으로 엘리먼트 렌더링하기
+
+HTML파일에 있을 div 태그를 생각해보자.
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Document</title>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+</html>
+```
+
+이렇게 HTML 파일이 있을 때, 실질적으로 필요한 부분은 div태그라고 할 수 있다. React에서는 이것을 루트 DOM 노드(root DOM node)라고 한다. 이 태그안에 존재하는 모든 자식 요소들은 React DOM에 의해 관리된다. 보통 React로 작성된 앱들은 단일 루트 DOM 노드를 가지고 있다.
+
+React 엘리먼트를 루트 DOM 노드로 렌더링하려면 ReactDOM.render () 함수에 모두 전달하면 된다.
+
+```
+const element = <h1>Hello, world</h1>;
+ReactDOM.render(element, document.getElementById('root'));
+```
+
+위의 함수를 해석하자면 element라는 엘리먼트를 id가 root인 루트 DOM 노드에 렌더링하겠다는 의미이다.
+
+이 [링크](https://codepen.io/anon/pen/rryKoL)에 들어가보면 위 코드의 작동 방식을 확인할 수 있을 것이다.
+
+## 렌더링된 엘리먼트 업데이트하기
+
+리액트 엘리먼트는 변경 불가능하다. 엘리먼트를 렌더링한 이후에는 엘리먼트의 속성이나 자식을 수정할 수 없다. 엘리먼트는 영화의 한 장면처럼 특정 시점의 UI상태를 나타낸다.
+
+리액트에서 UI를 업데이트하는 방식은 오직 엘리먼트를 생성하고 ReactDOM.render() 함수에 넘기는 방식뿐이다.
+
+따라서 엄청나게 복잡한 구조의 엘리먼트가 있을 때, 해당 엘리먼트에서 속성 하나만 바뀌었다고 새로운 엘리먼트를 만들어서 전달해야한다.
+
+하지만 React가 그렇게 비효율적일리가 없죠. React에서는 모든 엘리먼트를 업데이트할 때 새로운 엘리먼트로 전달받지만, React DOM에서는 새로 전달받은 엘리먼트와 과거의 엘리먼트를 비교해 업데이트가 필요한 부분만 새로 업데이트한다.
+
+```
+function tick() {
+  const element = (
+    <div>
+      <h1>Hello, world!</h1>
+      <h2>It is {new Date().toLocaleTimeString()}.</h2>
+    </div>
+  );
+  ReactDOM.render(
+    element,
+    document.getElementById('root')
+  );
+}
+setInterval(tick, 1000);
+```
+
+위 예제는 1초마다 시간을 갱신하는 소스다. [링크](https://codepen.io/pen?&editors=0010)에 들어가보면 실제로 동작하는 리액트 앱을 만날 수 있다.

@@ -1,0 +1,231 @@
+# 컴포넌트와 Props
+
+컴포넌트는 UI를 독립적이고 재사용 가능하게 분리하고, 각 부분을 개별적으로 생각할 수 있게 만들어준다. 
+
+> 개념적으로 컴포넌트는 자바스크립트 함수와 같다. 컴포넌트는 임의의 입력(props)을 받고 화면에 보여질 것을 설명하는 React 엘리먼트를 반환한다.
+
+## 함수적 컴포넌트와 클래스 컴포넌트
+
+컴포넌트를 정의하는 가장 쉬운 방법은 자바스크립트 함수를 사용하는 것이다.
+
+```js
+function Welcome (props) {
+    return <p>Hello, {props.name}</p>;
+}
+```
+
+위 함수는 props 객체 인자를 데이터와 받아들이고 React 엘리먼트를 반환하기 때문에 유효한 컴포넌트이다. 이런 컴포넌트는 말 그대로 자바스크립트 함수이기 때문에 함수적(functional) 컴포넌트라고 한다.
+
+함수가 아니라 클래스를 통해서 만들 수도 있다.
+
+```js
+class Welcome extends React.Component {
+  render() {
+    return <h1>Hello, {this.props.name}</h1>;
+  }
+}
+```
+
+위의 두 코드로 생긴 컴포넌트는 React의 관점에서 같은 컴포넌트다.
+
+## 컴포넌트 렌더링
+
+이전에 DOM 태그를 나타내는 React 컴포넌트들을 봤었다.
+
+```js
+const element = <div />
+```
+
+하지만 엘리먼트는 사용자 정의 태그도 나타낼 수 있다.
+
+```js
+const element = <Welcome name="Sara" />
+```
+
+React가 엘리먼트가 사용자 정의 태그를 나타내는 것을 봤을 때, React는 JSX 속성을 컴포넌트에 단일 객체로 전달한다. 이 객체를 "props"라고 부른다.
+
+아래 코드는 페이지에 "Hello, Sara"를 렌더링한다.
+
+```js
+function Welcome(props) {
+  return <h1>Hello, {props.name}</h1>;
+}
+
+const element = <Welcome name="Sara" />;
+ReactDOM.render(
+  element,
+  document.getElementById('root')
+);
+```
+
+## 컴포넌트 작성하기
+
+컴포넌트는 다른 컴포넌트를 참조할 수 있다. React에서 버튼, input 박스, 화면 등 모든 것들은 컴포넌트로 표현된다.
+
+```js
+function Welcome(props) {
+  return <h1>Hello, {props.name}</h1>;
+}
+
+function App() {
+  return (
+    <div>
+      <Welcome name="Sara" />
+      <Welcome name="Cahal" />
+      <Welcome name="Edite" />
+    </div>
+  );
+}
+
+ReactDOM.render(
+  <App />,
+  document.getElementById('root')
+);
+```
+
+위 예제를 보면 App 컴포넌트에서 Welcome 컴포넌트를 사용할 수 있다는 것을 알 수 있다.
+
+## 컴포넌트 추출
+
+컴포넌트를 더 작은 컴포넌트로 만드는 것을 두려워하지 말아라.
+
+아래 예시를 통해 확인해보자.
+
+```js
+function formatDate(date) {
+  return date.toLocaleDateString();
+}
+
+function Comment(props) {
+  return (
+    <div className="Comment">
+      <div className="UserInfo">
+        <img
+          className="Avatar"
+          src={props.author.avatarUrl}
+          alt={props.author.name}
+        />
+        <div className="UserInfo-name">
+          {props.author.name}
+        </div>
+      </div>
+      <div className="Comment-text">{props.text}</div>
+      <div className="Comment-date">
+        {formatDate(props.date)}
+      </div>
+    </div>
+  );
+}
+
+const comment = {
+  date: new Date(),
+  text: 'I hope you enjoy learning React!',
+  author: {
+    name: 'Hello Kitty',
+    avatarUrl: 'http://placekitten.com/g/64/64',
+  },
+};
+ReactDOM.render(
+  <Comment
+    date={comment.date}
+    text={comment.text}
+    author={comment.author}
+  />,
+  document.getElementById('root')
+);
+```
+
+위 예시에서 props로 author(객체), date(date 객체)), text(문자열)를 받았다. 
+
+위 컴포넌트는 거의 순수 HTML로 이루어졌다고 볼 수 있다. 따라서 개별 요소들을 재사용하기 어렵다. 
+
+먼저, Avatar를 추출해보자.
+
+```js
+function Avatar(props) {
+  return (
+    <img className="Avatar"
+      src={props.user.avatarUrl}
+      alt={props.user.name}
+    />
+  );
+}
+```
+
+아바타는 Comment안에서 렌더링된다는 것을 알 필요가 없다. 그게 바로 Avatar가 받는 prop이 author보다 더 일반적인 user가 된 이유다.
+
+이제 우리는 Comment 컴포넌트를 이렇게 쓸 수 있다.
+
+```js
+function Comment(props) {
+  return (
+    <div className="Comment">
+      <div className="UserInfo">
+        <Avatar user={props.author} />
+        <div className="UserInfo-name">
+          {props.author.name}
+        </div>
+      </div>
+      <div className="Comment-text">
+        {props.text}
+      </div>
+      <div className="Comment-date">
+        {formatDate(props.date)}
+      </div>
+    </div>
+  );
+}
+```
+
+그 다음은 UserInfo를 분리할 차례다.
+
+```js
+function UserInfo(props) {
+  return (
+    <div className="UserInfo">
+      <Avatar user={props.user} />
+      <div className="UserInfo-name">
+        {props.user.name}
+      </div>
+    </div>
+  );
+}
+```
+
+이제는 훨씬 더 간략한 형태로 컴포넌트를 만들 수 있다.
+
+```js
+function Comment(props) {
+  return (
+    <div className="Comment">
+      <UserInfo user={props.author} />
+      <div className="Comment-text">
+        {props.text}
+      </div>
+      <div className="Comment-date">
+        {formatDate(props.date)}
+      </div>
+    </div>
+  );
+}
+```
+
+## Props는 읽기 전용이다.
+
+컴포넌트를 함수나 클래스로 선언했다고 해도, 컴포넌트는 props를 변경하지 말아야 한다. sum 함수를 생각해보자.
+
+```
+function sum(a, b) {
+    return a+b;
+}
+```
+
+인자를 수정하지 않고, 같은 인자일 때 항상 같은 결과를 반환하는 이런 함수를 [순수 함수](https://en.wikipedia.org/wiki/Pure_function)라고 부른다. 
+
+반대로 인자를 수정하는 함수를 불순 함수라고 한다.
+
+```js
+function withdraw(account, amount) {
+  account.total -= amount;
+}
+```

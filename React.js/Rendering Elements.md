@@ -4,7 +4,7 @@
 
 엘리먼트는 네가 화면에 보여주고 싶은 것을 설명한다.
 
-```
+```js
 const element = <h1>Hello, World!</h1>;
 ```
 
@@ -14,7 +14,7 @@ const element = <h1>Hello, World!</h1>;
 
 HTML파일에 있을 div 태그를 생각해보자.
 
-```
+```js
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,7 +31,7 @@ HTML파일에 있을 div 태그를 생각해보자.
 
 React 엘리먼트를 루트 DOM 노드로 렌더링하려면 ReactDOM.render () 함수에 모두 전달하면 된다.
 
-```
+```js
 const element = <h1>Hello, world</h1>;
 ReactDOM.render(element, document.getElementById('root'));
 ```
@@ -50,7 +50,7 @@ ReactDOM.render(element, document.getElementById('root'));
 
 하지만 React가 그렇게 비효율적일리가 없죠. React에서는 모든 엘리먼트를 업데이트할 때 새로운 엘리먼트로 전달받지만, React DOM에서는 새로 전달받은 엘리먼트와 과거의 엘리먼트를 비교해 업데이트가 필요한 부분만 새로 업데이트한다.
 
-```
+```js
 function tick() {
   const element = (
     <div>

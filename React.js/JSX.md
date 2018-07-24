@@ -8,7 +8,7 @@ React에서 JSX를 써야만 하는 것은 아니지만, JSX를 사용하면 Rea
 
 아래 예시를 보면 변수를 선언했을 때, 변수를 JSX안에 중괄호로 감싸서 사용할 수 있다.
 
-```
+```js
 const name = "James";
 let element = <h1> Hello? {name}! </h1>;
 
@@ -22,7 +22,7 @@ JSX안에 있는 중괄호에는 모든 자바스크립트 표현식이 올 수 
 
 중괄호안에 함수를 사용해봅시다.
 
-```
+```js
 function getId(user) {
   return user.id;
 }
@@ -51,7 +51,7 @@ ReactDOM.render(
 
 컴파일된 이후에 JSX는 자바스크립트 객체로 판별된다. 이 말은, if문이나 for문 같은 **제어문에서 JSX를 사용할 수 있다**는 말이다.
 
-```
+```js
 function getId(user) {
   if (user) {
     return <h1>Your id is {user.id}</h1>;
@@ -64,13 +64,13 @@ function getId(user) {
 
 JSX로 속성을 지정할 때, 문자열로 지정해줄 수 있다.
 
-```
+```js
 const element = <div tabIndex="0"></div>
 ```
 
 혹은 중괄호로 자바스크립트 표현식을 포함해서 지정해줄 수 도 있다.
 
-```
+```js
 const element = <img src={images.background}></img>;
 ```
 
@@ -80,13 +80,13 @@ const element = <img src={images.background}></img>;
 
 JSX에 태그가 비어있을 때, XML처럼 태그를 />를 통해 바로 닫을 수 있다.
 
-```
+```js
 const element = <img src = {images.background}/>;
 ```
 
 반면에 자식요소가 있을 때도 있다. 
 
-```
+```js
 const element = (
     <div>
       <h1>Hello? {user.name}.</h1>
@@ -101,7 +101,7 @@ Babel은 JSX를 React.createElement() 함수를 호출해서 컴파일한다.
 
 밑의 두 예제의 결과는 같다.
 
-```
+```js
 const element = (
   <h1 className="greeting">
     Hello, world!
@@ -109,7 +109,7 @@ const element = (
 );
 ```
 
-```
+```js
 const element = React.createElement(
   'h1',
   {className: 'greeting'},
@@ -121,7 +121,7 @@ const element = React.createElement(
 
 React.createElement() 함수는 버그없는 코드를 만들기 위해 몇가지 검사를 진행한다. 하지만 필수적으로 아래와 같은 객체를 만들어낸다.
 
-```
+```js
 const element = {
   type: 'h1',
   props: {

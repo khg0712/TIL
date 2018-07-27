@@ -13,8 +13,8 @@ const name = "James";
 let element = <h1> Hello? {name}! </h1>;
 
 React.DOM.render(
-    element,
-    document.getElementById('root')
+  element,
+  document.getElementById('root')
 );
 ```
 
@@ -88,10 +88,10 @@ const element = <img src = {images.background}/>;
 
 ```js
 const element = (
-    <div>
-      <h1>Hello? {user.name}.</h1>
-      <p>I'm clickim</p>
-    </div>
+  <div>
+    <h1>Hello? {user.name}.</h1>
+    <p>I'm clickim</p>
+  </div>
 );
 ```
 

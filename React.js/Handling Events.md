@@ -1,0 +1,116 @@
+# 이벤트 핸들링
+
+리액트 엘리먼트로 이벤트 핸들링을 하는 것은 DOM 엘리먼트에 이벤트 핸들링을 하는 것과 매우 비슷하다. 이 둘 사이에 몇 가지 문법적 차이가 있다.
+
+- 리액트 이벤트는 카멜 케이스로 이름을 붙힌다.
+- JSX에서는 문자열이 아닌 이벤트 핸들러로 함수를 전달한다.
+
+간단한 HTMl을 예로 들자면,
+
+```HTML
+<button onclick="activateLasers()">
+  Activate Lasers
+</button>
+```
+
+위 처럼 문자열로 이벤트 핸들러를 전달하지만, 리액트에서는 조금 다르다.
+
+```js
+<button onclick={activeLasers}>
+  Active Lasers
+</button>
+```
+
+리액트를 사용할 때, 일반적으로 DOM 엘리먼트가 생성된 이후에 addEventListener를 호출해서 리스너를 추가할 필요가 없다. 대신에 엘리먼트가 처음 렌더링될 때에만 리스너를 제공하면 된다.
+
+ES6 클래스를 통해서 컴포넌트를 정의할 때, 일반적인 패턴은 이벤트 핸튿러를 메서드로 넣는 것이다. 예를 들어 Toggle 컴포넌트가 유저에게 ON이나 OFF 상태 사이를 토글하게 한다.
+
+```js
+class Toggle extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {isToggleOn: true};
+
+    // This binding is necessary to make `this` work in the callback
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick() {
+    this.setState(prevState => ({
+      isToggleOn: !prevState.isToggleOn
+    }));
+  }
+
+  render() {
+    return (
+      <button onClick={this.handleClick}>
+        {this.state.isToggleOn ? 'ON' : 'OFF'}
+      </button>
+    );
+  }
+}
+
+ReactDOM.render(
+  <Toggle />,
+  document.getElementById('root')
+);
+```
+
+여기서 JSX 콜백에서 this의 의에 주의해야 한다. JS에서는 클래스 메서드가 기본적으로 this가 바인딩 되지 않는다. 만약 bind 메서드로 this를 바인딩하지 않는다면 메서드가 호출되었을 때 this는 undefined가 될 것이다.
+
+이것은 리액트에서만 일어나는 동작이 아니라 JS에서 함수가 어떻게 작동하는 지에 관한 것이다. 일반적으로 메서드를 괄호 없이 참조했을 때 (onclick={this.handleClick} 처럼) 메서드를 바인드해야 한다.
+
+bind메서드를 사용하는 게 귀찮다면 이 문제를 해결할 수 있는 두 가지 방법이 있다. 실험용 [public 클래스 필드 문법](https://babeljs.io/docs/en/babel-plugin-transform-class-properties/)(public class fields syntax)을 사용하면 콜백을 알맞게 바인딩할 수 있다.
+
+```js
+class LoggingButton extends React.Component {
+  // This syntax ensures `this` is bound within handleClick.
+  // Warning: this is *experimental* syntax.
+  handleClick = () => {
+    console.log('this is:', this);
+  }
+
+  render() {
+    return (
+      <button onClick={this.handleClick}>
+        Click me
+      </button>
+    );
+  }
+}
+```
+
+클래스 필드 구문을 사용하지 않으면 콜백에서 화살표 함수를 사용할 수 있다.
+
+```js
+class LoggingButton extends React.Component {
+  handleClick() {
+    console.log('this is:', this);
+  }
+
+  render() {
+    // This syntax ensures `this` is bound within handleClick
+    return (
+      <button onClick={(e) => this.handleClick(e)}>
+        Click me
+      </button>
+    );
+  }
+}
+```
+
+이 문법ㅇ의 문제는 LogginginButton이 렌더링 될 때마다 다른 콜백이 생성된다는 것이다. 대부분의 경우엔 괜찮지만 이 콜백이 prop으로 하위 컴포넌트로 전달될 때, 이 컴포넌트는 다시 렌더링될 것이다. 따라서 일반적으로 생성자에서 this를 바인딩하거나 클래스 필드 문법을 사용해야 한다.
+
+## 이벤트 핸들러에 인자 전달하기
+
+반복문 내에 이벤트 핸들러에 추가 매개 변수를 전달하려는 것이 일반적이다. 예를 들어 id가 row ID라면 둘 중 하나가 작동할 것이다.
+
+```js
+<button onClick={(e) => this.deleteRow(id, e)}> Delete Row </button>
+
+<button onClick={this.deleteRow.bind(this, id)}> Delete Row </button>
+```
+
+위의 두 코드는 동등하고 각각 화살표 함수와 bind 메서드를 사용한다.
+
+두 코드 모두 리액트 이벤트를 나타내는 e 인자는 ID뒤에 두 번째 인자로 전돨된다. 화살표 함수를 사용하면 명시적으로 전달해야 하지만, bind 메서드를 사용하면 이후 인자가 자동으로 전달된다.

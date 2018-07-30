@@ -1,0 +1,289 @@
+# Forms
+
+리액트에서 HTML form 엘리먼트는 다른 DOM 엘리먼트와 약간 다르게 작동한다. 왜냐하면 form 엘리먼트는 자연스럽게 내부 상태를 유지하기 때문이다. 예를 들어 순수 HTML로 작성된 아래 form은 단일 name을 허용한다.
+
+```html
+<form>
+  <label>
+    Name:
+    <input type="text" name="name" />
+  </label>
+  <input type="submit" value="Submit" />
+</form>
+```
+
+위 form은 사용자가 form을 제출할 때, 새 페이지를 탐색하는기본 HTML form 태그의 행동을 가지고 있다. 만약 리액트에서 이렇게 작동하길 원한다면, 다른 일을 해줄 필요가 없다.(그냥 작동한다.) 하지만 대부분의 경우에서, form의 제출을 처리하고 사용자가 form에 입력한 데이터에 접근할 수 있는 JS 함수를 포함해주는 게 편리하다.
+
+일반적인 방법은 "Controlled compoents" 기술을 사용하는 것이다.
+
+## Controlled 컴포넌트
+
+HTML에서 \<input>, \<textarea>, \<select>같은 form 엘리먼트는 일반적으로 자체 상태를 유지하고 사용자 입력을 기반으로 업데이트한다. 반면에, 리액트에서는 변경할 수 있는 State는 일반적으로 컴포넌트의 State 상태 속성에 유지되고 setState 함수로만 업데이트된다.
+
+이런 리액트 State를 단일 소스로 만들어 두 가지를 결합할 수 있다. 그리고 나서 form을 렌러링하는 리액트 컴포넌트는 이후의 사용자 입력시 일어나는 일을 제어한다. 리액트에 의해 값이 관리되는 input form엘리먼트를 "**Controlled component**"라고 부른다.
+
+예를 들어 만약 우리가 이전 예제에서 form이 제출됐을 때 name을 보여주길 원했다면 우리는 form을 controlled 컴포넌트로써 작성할 수 있다.
+
+```js
+class NameForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {value: ''};
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+
+  handleSubmit(event) {
+    alert('A name was submitted: ' + this.state.value);
+    event.preventDefault();
+  }
+
+  render() {
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <label>
+          Name:
+          <input type="text" value={this.state.value} onChange={this.handleChange} />
+        </label>
+        <input type="submit" value="Submit" />
+      </form>
+    );
+  }
+}
+```
+
+value 속성이 form 엘리먼트내의 input 엘리먼트에 지정되어있기 때문에 보여지는 값은 항상 this.state.value일 것이다. 리액트 State를 업데이트하기 위해서 handleChange는 모는 키 스크토크에 동작하기 때문에 표시되는 value는 유저 입력에 따라 업데이트 될 것이다.
+
+controlled 컴포넌트는 모든 상태 변경이 핸들러 함수와 연관될 것이다. 이를 통해서 사용자 입력을 수정하거나 검증할 수 있다. 예를 들어 이름을 모두 대문자로 작성되게 하려면 handleChange 메서드를 아래처럼 변경할 수 있다.
+
+```js
+handleChange(event) {
+  this.setState({value: event.target.value.toUpperCase()});
+}
+```
+
+위 코드를 사용하면 무조건 어떤 영문자를 쓰든 대문자 영어로 반환된다.
+
+## textarea 태그
+
+HTML에서 \<textarea> 엘리먼트는 텍스트를 자식으로 정의한다.
+
+```html
+<textarea>
+  Hello there, this is some text in a text area
+</textarea>
+```
+
+리액트에서 \<textarea>는 value 속성을 사용한다. 이렇게 하면 \<textarea>를 사용하는 form은 한 줄 입력을 사용하는 form과 아주 비슷하게 쓸 수 있다.
+
+```js
+class EssayForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: 'Please write an essay about your favorite DOM element.'
+    };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+
+  handleSubmit(event) {
+    alert('An essay was submitted: ' + this.state.value);
+    event.preventDefault();
+  }
+
+  render() {
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <label>
+          Essay:
+          <textarea value={this.state.value} onChange={this.handleChange} />
+        </label>
+        <input type="submit" value="Submit" />
+      </form>
+    );
+  }
+}
+```
+
+`this.state.value`는 생성자에서 초기화된다는 것을 알아둬라. 하지만 이렇게 설명을 위한 기본 문장을 쓸 때에는 placeholder 속성에 작성해주는 게 더 나을 것 이다.
+
+```js
+constructor() {
+    this.state = {
+        placeholder: "Please write an essay about your favorite DOM element.",
+        value: ""
+    }
+}
+
+<textarea value={this.state.value} placeholder={this.state.placeholder} />
+```
+
+## select 태그
+
+HTML에서 \<select> 태그는 드롭다운 리스트를 생성한다. 
+
+```html
+<select>
+  <option value="grapefruit">Grapefruit</option>
+  <option value="lime">Lime</option>
+  <option selected value="coconut">Coconut</option>
+  <option value="mango">Mango</option>
+</select>
+```
+
+Coconut 옵션을 보면 selected 속성이 보일 것이다. 이 selected 속성은 해당 옵션을 초기에 선택되게 만든다. 리액트에서는 selected 속성을 사용하는 것 대신에, 루트 select 태그에 value 속성을 사용한다. 이 방식은 컴포넌트를 다룰 때 더 편리하다.
+
+```js
+class FlavorForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {value: 'coconut'};
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+
+  handleSubmit(event) {
+    alert('Your favorite flavor is: ' + this.state.value);
+    event.preventDefault();
+  }
+
+  render() {
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <label>
+          Pick your favorite flavor:
+          <select value={this.state.value} onChange={this.handleChange}>
+            <option value="grapefruit">Grapefruit</option>
+            <option value="lime">Lime</option>
+            <option value="coconut">Coconut</option>
+            <option value="mango">Mango</option>
+          </select>
+        </label>
+        <input type="submit" value="Submit" />
+      </form>
+    );
+  }
+}
+```
+
+전반적으로 이렇게 하면 input, textarea, select 모두 유사하게 작동한다. 모두 controlled 컴포넌트를 구현하는데 사용할 수 있는 value 속성을 사용한다.
+
+> 만약 select 엘리먼트에서 다수의 아이템을 선택하고 싶다면 multiple 속성에 true를 전달하고 value 속성에는 배열로 옵션을 전달하면 된다.
+
+```js
+<select multiple={true} value={['B', 'C']}>
+```
+
+## 파일 input 태그
+
+HTML에서 \<input type="file">은 사용자가 그들의 기기 저장소에서 한 개나 여러 개의 파일을 선택해서 서버로 업로드 하거나 파일 API를 통해 JS로 조작할 수 있게 한다.
+
+```html
+<input type="file" />
+```
+
+input 태그의 값은 읽기 전용 값이기 때문에 파일 input 엘리먼트는 리액트에서 **uncontrolled** component이다.
+
+## 다중 입력 처리
+
+여러개의 controlled input 엘리먼트를 처리해야 할 때, 각 요소에 name 속성을 추가하고 event.target,name의 값에 따라 핸들러 함수가 처리해야 할 작업을 선택하게 할 수 있다.
+
+```js
+class Reservation extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isGoing: true,
+      numberOfGuests: 2
+    };
+
+    this.handleInputChange = this.handleInputChange.bind(this);
+  }
+
+  handleInputChange(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+    });
+  }
+
+  render() {
+    return (
+      <form>
+        <label>
+          Is going:
+          <input
+            name="isGoing"
+            type="checkbox"
+            checked={this.state.isGoing}
+            onChange={this.handleInputChange} />
+        </label>
+        <br />
+        <label>
+          Number of guests:
+          <input
+            name="numberOfGuests"
+            type="number"
+            value={this.state.numberOfGuests}
+            onChange={this.handleInputChange} />
+        </label>
+      </form>
+    );
+  }
+}
+```
+
+여기서 사용한 ES6 계산된 속성 이름(computed property name) 문법을 자세히 살펴봐라.
+
+```js
+this.setState({
+  [name]: value
+});
+```
+
+ES5 코드로도 변환이 가능하다.
+
+```js
+var partialState = {};
+partialState[name] = value;
+this.setState(partialState);
+```
+
+또한 setState() 메서드는 부분 State를 현재 상태로 자동 병합하기 때문에 변경된 부분만 호출해도 문제가 없다.
+
+## Controlled Input 널 값
+
+controlled 컴포넌트에 prop 값을 지정하면 개발자가 의도한 경우가 아니면 사용자가 입력을 변경할 수 없다. value를 지정했지만 입력을 변경할 수 있는 경우에는, 실수로 value의 값을 undefined나 null로 설정할 수 있다.
+
+다음 코드는 위의 예시를 보여준다.
+
+```js
+ReactDOM.render(<input value="hi" />, mountNode);
+
+setTimeout(function() {
+  ReactDOM.render(<input value={null} />, mountNode);
+}, 1000);
+```
+
+## Controlled 컴포넌트의 대안
+
+데이터를 변경할 수 있는 모든 방법에 대해 이벤트 핸들러를 작성하고, 리액트 컴포넌트를 통해 입력 State를 pipe해야 하기 때문에 controlled 컴포넌트를 사용하는 것이 지루할 수도 있다. 기존의 코드 베이스를 리액트로 변환하거나 리액트 앱을 리액트 이외의 라이브러리와 통합할 때 성가신 일이 될 수도 있다. 이런 상황에서는 입력 form들을 구현하기 위한 대체 기술인 [uncontrolled 컴포넌트](https://reactjs.org/docs/uncontrolled-components.html)의 사용을 검토해봐야 할 수도 있다.

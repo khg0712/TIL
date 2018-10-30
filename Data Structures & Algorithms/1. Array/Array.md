@@ -14,7 +14,7 @@
 
 배열을 만드는 가장 간단한 방법은 배열 리터럴([])을 사용해서 만드는 방법이다.
 
-```
+```js
 let numbers = [];
 ```
 
@@ -22,7 +22,7 @@ let numbers = [];
 
 또 다른 언어들과 다르게 배열의 요소들은 각각 다른 타입이어도 된다.
 
-```
+```js
 let array = [1,2,"A",undefined, null,true];
 ```
 
@@ -32,7 +32,7 @@ let array = [1,2,"A",undefined, null,true];
 
 할당 문에 []를 사용해서 배열요소에 값을 할당할 수 있다. 
 
-```
+```js
 let numbers = [1,2,3,4];
 console.log(numbers[1]);//2 출력
 ```
@@ -41,7 +41,7 @@ console.log(numbers[1]);//2 출력
 
 문자열에 split() 함수를 호출하면 배열이 생성된다. split() 함수는 문자열을 특정 구분자로 분리한 다음 분리된 문자열을 포함하는 배열을 만든다.
 
-```
+```js
 let string = "A B C D E F G";
 let alphabets = string.split(" ");
 for(let i=0; i<alphabets.length; i++) {
@@ -53,7 +53,7 @@ for(let i=0; i<alphabets.length; i++) {
 
 배열을 다른 배열에 할당할 수도 있다.
 
-```
+```js
 let array = [12,34,5,6];
 let newArr = array;
 ```
@@ -62,7 +62,7 @@ let newArr = array;
 
 고전적으로 깊은 복사를 하는 방식은 for문으로 배열의 요소 하나 하나를 순회하여 복사하는 것이다.
 
-```
+```js
 let arr = [2,5,6,7,3,2];
 let newArr=[];
 for(let i=0; i<arr.length; i++) {
@@ -72,14 +72,14 @@ for(let i=0; i<arr.length; i++) {
 
 es6의 확산 연산자 ( `...` )를 사용하면 더 쉽게 깊은 복사를 할 수 있다.
 
-```
+```js
 let arr = [2,5,6,7,3,2];
 let newArr = [...arr];
 ```
 
 복사를 했을 때 깊은 복사인지 얕은 복사인지 여부를 확인할 때에는 ===연산자를 통해서 레퍼런스를 비교하면 된다. 위 상황에서는 다음과 같은 결과가 나온다.
 
-```
+```js
 let arr = [2,5,6,7,3,2];
 let newArr = [...arr];
 console.log(arr===newArr);//false 출력
@@ -91,9 +91,9 @@ console.log(arr===newArr);//false 출력
 
 ### 특정 요소 검색하기
 
-indexOf() 함수는 인자로 제공된 값이 배열 어디에 존재하는지 알려준다. 만약 배열 내에 존재한다면 인덱스를 제공하고 그렇지 않다면 -1을 반환한다. indexOf() 함수는 배열의 앞에서부터 첫번째로 발견된 인자의 인덱스를 반환한다. lastIndexOf() 함수는 그 반대로 동작한다.
+indexOf() 메서드는 인자로 제공된 값이 배열 어디에 존재하는지 알려준다. 만약 배열 내에 존재한다면 인덱스를 제공하고 그렇지 않다면 -1을 반환한다. indexOf() 메서드는 배열의 앞에서부터 첫번째로 발견된 인자의 인덱스를 반환한다. lastIndexOf() 메서드는 그 반대로 동작한다.
 
-```
+```js
 let alphabets = ['a','b','c','d','e','f','g'];
 let aIndex = alphabets.indexOf('a');//0
 let zIndex = alphabets.indexOf('z');//-1
@@ -101,9 +101,9 @@ let zIndex = alphabets.indexOf('z');//-1
 
 ### 배열을 문자열로 표현하기
 
-배열을 문자열로 변환할 때에는 join() 함수와 toString() 함수를 사용할 수 있다. join() 함수는 인자로 넣은 값들을 요소의 사이 사이에 넣은 문자열을 반환하고 인자가 없을 때에는 쉼표(,)가 인자의 사이에 들어간다. toString() 함수는 인자를 필요로하지 않고, 요소의 사이 사이에 쉽표를 넣은 문자열을 반환한다.
+배열을 문자열로 변환할 때에는 join() 메서드와 toString() 메서드를 사용할 수 있다. join() 메서드는 인자로 넣은 값들을 요소의 사이 사이에 넣은 문자열을 반환하고 인자가 없을 때에는 쉼표(,)가 인자의 사이에 들어간다. toString() 메서드는 인자를 필요로하지 않고, 요소의 사이 사이에 쉽표를 넣은 문자열을 반환한다.
 
-```
+```js
 let alphabets = ['a','b','c','d','e','f','g'];
 let myAlphas = alphabets.join(' # ');
 let myABC = alphabets.toString();
@@ -111,4 +111,89 @@ let myABC = alphabets.toString();
 
 ### 기존의 배열을 이용해서 새 배열 만들기
 
-concat() 함수, splice() 함수는 기존 배열을 이용해서 새 배열을 만드는 함수다. concat() 함수는 두개 이상의 배열을 합쳐서 새 배열을 만들고, splice() 함수는 기존 배열의 서브셋으로 새 배열을 만든다.
+concat() 메서드와 splice() 메서드는 기존 배열을 이용해서 새 배열을 만드는 함수다. **concat() 함수**는 두 개 이상의 **배열을 합쳐서** 새 배열을 만들고, **splice() 함수**는 **기존 배열의 서브셋**으로 새 배열을 만든다.
+
+concat() 메서드는 기존의 배열에서 호출하고, 인자로는 기존의 배열 끝에 새로 추가할 요소들을 받는다. 추가할 수 있는 자료형은 무엇이든 가능하다. 만약 배열을 인자로 제공한다면 배열은 분해되어 개별 요소로서 들어간다. 사용법은 아래와 같다.
+
+```js
+let arr = [1,2,3,4], additionalArr = [5,6,7,8];
+let newArr1 = arr.concat(additionalArr);//[1,2,3,4,5,6,7,8]
+let newArr2 = arr.concat(5, 'a',true, undefined, null, {});//[1, 2, 3, 4, 5, "a", true, undefined, null, {}]
+let newArr3 = arr.concat([[5,6],[7,8],[9,10]]);//[1, 2, 3, 4, [5,6],[7,8],[9,10]]
+```
+
+단, 배열이 1차원이 아닐 경우에는 요소가 1차원보다 더 분해되지 않는다.
+
+splice() 메서드는 기존 배열 요소의 일부분을 가지고 새로운 배열을 만든다. splice() 메서드는 사용할 첫 요소의 인덱스, 기존 배열에서 사용할 요소의 개수를 인자로 받는다. 사용법은 아래와 같다.
+
+```js
+let nameList = ["Kim","Jane","Junho"];
+let selectedList = nameList.splice(1,1);//["Jane"]
+console.log(nameList);//["Kim", "Junho"] 출력
+```
+
+새로운 배열을 반환하는 용도로 splice() 메서드를 사용할 수 있지만, 기존 배열을 수정하기 위해서도 사용할 수 있다.
+
+## 변형자 함수
+
+자바스크립트는 개별적으로 배열의 내용을 변경할 수 있는 변형자 함수를 제공한다.
+
+### 배열에 요소 추가하기
+
+배열에 요소를 추가할 때에는 push() 메서드와 unshift() 메서드를 사용한다. push() 메서드는 배열의 뒤에 새로운 요소를 추가하고, unshift() 메서드는 배열의 앞에 새로운 요소를 추가한다.
+
+```js
+let arr = [2,3,4];
+arr.push(5,6);
+arr.unshift(0,1);
+console.log(arr);//[0,1,2,3,4,5,6] 출력
+```
+
+### 배열의 요소 삭제하기
+
+pop() 메서드를 사용하면 마지막 요소를 제거할 수 있다. 그리고 shift() 메서드를 사용하면 맨 앞 요소를 제거할 수 있다. pop() 메서드와 shift() 메서드는 반환한 요소를 반환하기 때문에 변수에 삭제된 요소의 값을 할당할 수 있다.
+
+```js
+let arr = [1,2,3];
+console.log(arr.pop());//3 출력
+console.log(arr.shift());//1 출력
+console.log(arr)//[2] 출력
+```
+
+### 배열의 중간에 있는 요소 변경하기
+
+splice() 메서드는 배열 중간에 있는 요소를 추가하거나 삭제할 때 사용한다. splice() 메서드를 사용할 때에는 3가지 파라미터를 받는다. 
+
+1. 변경을 시작할 인덱스
+2. 삭제할 요소의 개수(추가일 땐 0)
+3. 배열에 추가할 요소들(삭제만 할 땐 필요 x)
+
+```js
+let arr = [1,2,3,4,5];
+arr.splice(1,3);
+console.log(arr);//[1,5]출력
+```
+
+### 배열 요소 정렬하기
+
+자바스크립트에는 배열의 요소를 정렬하는 변형자 함수가 존재한다. 바로 reverse() 메서드와 sort() 메서드다.
+
+reverse() 메서드는 해당 배열의 현재 순서를 역순으로 바꿔준다.
+
+sort() 메서드는 배열 요소를 순서대로 정렬한다. 특히, **문자열**을 **정렬**하는 데에 특화되어 있다.
+
+```js
+let names = ['Kim','Amy', 'Ryu', 'James','Gorge'];
+names.sort();
+console.log(names);//["Amy", "Gorge", "James", "Kim", "Ryu"] 출력
+```
+
+하지만 숫자는 예상대로 정렬되지 않는다.
+
+```js
+let grades = [45,65,4,2,100];
+grades.sort();
+console.log(grades);//[100, 2, 4, 45, 65] 출력
+```
+
+sort() 메서드는 배열 요소를 모두 문자열로 간주하고 알파벳순으로 요소를 정렬한다. 하지만 sort() 메서드에 인자로 순서를 결정해줄 콜백함수를 넣어주면 해당 콜백함수로 배열 요소를 정렬한다.

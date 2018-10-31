@@ -196,4 +196,187 @@ grades.sort();
 console.log(grades);//[100, 2, 4, 45, 65] 출력
 ```
 
-sort() 메서드는 배열 요소를 모두 문자열로 간주하고 알파벳순으로 요소를 정렬한다. 하지만 sort() 메서드에 인자로 순서를 결정해줄 콜백함수를 넣어주면 해당 콜백함수로 배열 요소를 정렬한다.
+sort() 메서드는 배열 요소를 모두 문자열로 간주하고 알파벳순으로 요소를 정렬한다. 하지만 sort() 메서드에 인자로 순서를 결정해줄 콜백함수를 넣어주면 해당 콜백함수로 배열 요소를 정렬한다. 콜백함수는 요소의 순서를 결정해줘야 하는데 두 가지 인자를 받아야 한다. 첫 번째 인자의 우선순위가 높으면 양수, 두 번째 인자의 우선순위가 높으면 음수, 우선순위가 같으면 0을 반환하면 된다. 그렇다면 숫자의 크기를 비교하는 간단한 콜백함수를 작성해서 sort() 메서드에서 사용해보자.
+
+```js
+function numCompare(num1, num2) {
+    return num1-num2;
+}
+function numReverseCompare(num1, num2) {
+    return num2-num1;
+}
+
+let arr = [111,43,65,88,44,23,67,43];
+arr.sort(numCompare);
+console.log(arr);//[23, 43, 43, 44, 65, 67, 88, 111] 출력
+arr.sort(numReverseCompare);
+console.log(arr);//[111, 88, 67, 65, 44, 43, 43, 23] 출력
+```
+
+## 반복자 함수
+
+반복자 함수는 배열의 각 요소에 함수를 적용한 다음 그 결과 값 혹은 값의 집합을 반환한다.
+
+### 배열을 만들지 않는 반복자 함수
+
+배열의 각 요소에 어떤 작업을 수행하거나 배열에 작업을 수행하고 하나의 값을 반환하는 함수를 살펴보자.
+
+배열을 만들지 않는 반복자 함수에는 forEach() 메서드가 있다. forEach() 메서드는 배열의 모든 요소에 인자로 받은 콜백함수를 호출한다.
+
+```js
+function square(num) {
+    console.log(num**2);
+}
+
+let arr = [1,2,3,4,5,6];
+arr.forEach(square);
+```
+
+출력한 결과는 다음과 같다
+
+```
+1
+4
+9
+16
+25
+36
+```
+
+또, every() 메서드도 존재한다. every() 메서드는 불린 값을 반환하는 콜백함수를 배열에 적용해 배열의 모든 요소에서 콜백함수가 true을 반환하면 true를 반환한다.
+
+```js
+function isOdd(num) {
+    return num%2==1;
+}
+
+let arr = [1, 3, 5, 7, 9];
+console.log(arr.every(isOdd));//true 출력
+```
+
+반대의 기능을 하는 some() 메서드도 있다. some() 메서드는 불린 값을 반환하는 콜백함수 배열에 적용해 배열 요소들 중에 한 요소라도 true를 반환하면 true를 반환한다.
+
+```js
+function isOdd(num) {
+    return num%2==1;
+}
+
+let arr = [0, 2, 4, 8, 10];
+console.log(arr.some(isOdd));//false 출력
+```
+
+reduce() 메서드는 누적자 콜백함수를 인자로 받고, 다음 배열의 모든 요소를 누적자 콜백함수에 적용한다.
+
+```js
+function add(prevTotal, curVal) {
+    return prevTotal + curVal;
+}
+
+let arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+console.log(arr.reduce(add));//55 출력
+```
+
+위 예시는 배열의 모든 요소의 합을 더하는 예제이다.
+
+reduce() 메서드는 왼쪽에서 오른쪽 즉, 작은 인덱스에서 큰 인덱스의 요소의 방향으로 배열을 순회한다. 반대로 reduceRight() 메서드는 큰 인덱스에서 작은 인덱스의 방향으로 배열을 순회한다.
+
+```js
+function stringCombine(prevVal, curVal) {
+    return prevVal + curVal;
+}
+let words = ['A','b','c','D','E'];
+console.log(words.reduceRight(stringCombine));//EDcbA 출력
+```
+
+### 새 배열을 반환하는 반복자 함수
+
+map() 메서드, filter() 메서드는 모두 새 배열을 반환하는 반복자 함수다. map() 메서드는 forEach() 메서드처럼 배열의 모든 요소에 콜백함수를 적용하는 함수이다. 하지만 요소에 콜백함수를 적용한 결과 값을 저장한 배열을 반환한다.
+
+```js
+function curve(num) {
+    return num += '월';
+}
+let months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+let curvedMonths = months.map(curve);//["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"]
+```
+
+filter() 메서드는 every() 메서드와 비슷하지만 콜백함수가 참을 반환하는 요소들을 모은 **새로운 배열을 반환**한다. 즉, 배열에서 조건에 맞는 요소들을 **filter**하는 것이다.
+
+```js
+function isOdd(num) {
+    return num%2!=0;
+}
+
+function isEven(num) {
+    return num%2==0;
+}
+
+let nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+let odds = nums.filter(isOdd);//[ 1, 3, 5, 7, 9 ]
+let evens = nums.filter(isEven);//[ 2, 4, 6, 8, 10 ]
+```
+
+filter() 메서드는 숫자뿐만 아니라 문자열도 다룰 수 있다.
+
+```js
+function havea(word) {
+    if(word.indexOf('a') > -1 || word.indexOf('A') > -1)
+        return true;
+    return false;
+}
+
+let words = ["apple",'Ant','cake','lost','bike','base'];
+let a_words = words.filter(havea);//[ 'apple', 'Ant', 'cake', 'base' ]
+```
+
+## 이차원 배열과 다차원 배열
+
+### 이차원 배열 만들기
+
+이차원 배열은 행렬구조를 띈다. 따라서 행과 열을 필요로 한다. 반복문을 통해서 2차원 배열을 만들어보자.
+
+```js
+let twod = [];
+let rowNum = 10;
+for(let i = 0; i < rowNum; i++) {
+    twod[i] = [];
+}
+```
+
+위 방식으로 이차원 배열을 만들면 모든 요소가 초기화되지 않은 상태이기 때문에 undefined로 설정된다. `더글라스 크락포드의 자바스크립트 핵심 가이드`에서 제공하는 예제를 이용하면 더 실용적인 이차원 배열을 만들 수 있다. 배열의 행과 열, 그리고 초기화할 값을 입력받는다.
+
+```js
+Array.matrix = function(numrows, numcols, initial) {
+  let arr = [];
+  for(let i = 0; i < numrows; ++i) {
+    let colums = [];
+    for(let j = 0; j < numcols; ++j) {
+      colums[j] = initial;
+    }
+    arr[i] = colums;
+  }
+  return arr;
+}
+
+let num = Array.matrix(5, 5, 0);
+console.log(num);
+
+// result
+
+// [ [ 0, 0, 0, 0, 0 ],
+//   [ 0, 0, 0, 0, 0 ],
+//   [ 0, 0, 0, 0, 0 ],
+//   [ 0, 0, 0, 0, 0 ],
+//   [ 0, 0, 0, 0, 0 ] ]
+```
+
+물론 대괄호 표기법으로도 이차원 배열을 정의할 수 있다.
+
+```js
+let matrix = [[1,2,3,4],[5,6,7,8],[9,10,11,12]];
+console.log(matrix[0][2]);//3 출력
+```
+
+### 이차원 배열 요소 처리하기
+
+기본적으로 이차원 배열 요소는 두 가지 방법으로 처리할 수 있다. **행**을 기준으로 처리하는 것과 **열**을 기준으로 처리하는 것이다. **행 중심**으로 배열을 처리할 때에는 **외부 루프**가 **열**을 처리하고, **내부 루프**가 **행**을 처리하게 만들면 된다. 반대로 **열 중심**으로 배열을 처리할 때에는 **외부 루프**가 **행**을 처리하고, **내부 루프**가 **열**을 처리하게 만들면 된다.

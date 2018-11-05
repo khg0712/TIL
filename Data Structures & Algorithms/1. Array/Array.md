@@ -406,3 +406,102 @@ for(let i = 0; i < grades.length; i++) {
 
 지금까지는 숫자, 문자열 등 기본 데이터형을 요소로 포함하는 배열만 살펴봤다. 배열을 객체를 요소로 포함할 수 있다.
 
+```js
+function Point(x, y) {
+    this.x = x;
+    this.y = y;
+}
+
+function displayPts(arr) {
+    for(let i = 0; i < arr.length; i++) {
+        console.log(`${arr[i].x}, ${arr[i].y}`);
+    }
+}
+
+let points = [];
+for(let i = 0; i < 5; i++) {
+    points[i] = new Point(i, i+5);
+}
+
+displayPts(points);
+console.log('before pushing');
+points.push(new Point(10,100));
+displayPts(points);
+console.log('before shift');
+points.shift();
+displayPts(points);
+```
+
+push() 메서드로 객체를 추가하고 shift() 메서드로 객체를 삭제하는 것도 잘 작동한다.
+
+## 객체에 포함된 배열
+
+객체에 복잡한 데이터를 저장할 때 배열을 활용할 수 있다. 
+
+예제에서는 한 주동안 관찰된 가장 높은 온도를 저장하는 객체를 만든다. 이 객체에는 새 온도를 추가하는 기능, 객체에 저장된 온도의 평균을 계산하는 기능이 있다.
+
+```js
+function weekTemp() {
+    this.dataStore = [];
+    this.add = add;
+    this.avg = avg;
+}
+
+function add(temp) {
+    this.dataStore.push(temp);
+}
+
+function avg() {
+    let sum = 0;
+    for(let i = 0; i < this.dataStore.length; i++) {
+        sum += this.dataStore[i];
+    }
+    return sum / this.dataStore.length;
+}
+
+let thisWeek = new weekTemp();
+
+thisWeek.add(52);
+thisWeek.add(12);
+thisWeek.add(42);
+thisWeek.add(54);
+thisWeek.add(19);
+thisWeek.add(30);
+console.log(thisWeek.avg());
+```
+
+add() 메서드는 Array의 push() 메서드를 사용해서 배열에 데이터를 추가한다.
+
+## 연습문제
+
+1. 객체에 학생들의 점수 집합을 저장하는 grades 객체를 만드시오 점수를 추가하는 함수, 학생의 평균 점수를 출력하는 기능을 객체에 추가하시오.
+
+```js
+function grades() {
+    this.gradeStore = [];
+    this.add = add;
+    this.avg = avg;
+}
+
+function add(grade) {
+    this.gradeStore.push(grade);
+}
+
+function avg() {
+    let sum = 0;
+    for(let i = 0; i < this.gradeStore.length; i++) {
+        sum += this.gradeStore[i];
+    }
+    return sum / this.gradeStore.length;
+}
+
+let myGrades = new grades();
+myGrades.add(13);
+myGrades.add(54);
+myGrades.add(100);
+
+console.log(myGrades.avg());
+```
+
+2. 배열의 단어 집합을 저장한 다음 배열의 내용을 정방향 또는 역방향으로 출력하는 기능을 구현하시오.
+3. 이차원 배열을 이용해 월간 온도 자료를 저장하도록 weeklyTemp 객체를 수정하시오. 월간 평균, 지정한 주의 평균, 모든 주의 평균을 출력하는 함수를 만드시오.
